@@ -20,7 +20,7 @@ local graphs
 foreach var in fin io pf{
 
 #delimit ;
-graph twoway connect `var' eventtime, ytitle(Outcome) cmissing(no)
+graph twoway connect `var' eventtime, ytitle(Outcome) cmissing(no) lcolor(gs4) mcolor(gs4)
 xtitle(Periods after event) xline(0) graphregion(color(white))
 ;
 #delimit cr

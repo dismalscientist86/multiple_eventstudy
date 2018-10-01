@@ -17,10 +17,10 @@ gen event=(D.MnAgeGfB!=0) if L.change_beer==0
 replace event=0 if event==.
 replace event=0 if month <180 
 
-/*Count the number of events that have happened so far*/
+/*Count the number of events*/
 bysort fips: gen eventcount=sum(event)
 
-/*Create variables that capture the month of event*/
+/*Create variables that capture the year of event*/
 forvalues i=1/4{
 	by fips : egen event`i' = min(month + 1000000 * (eventcount != `i'))
 	replace event`i'=. if event`i'>30000
@@ -116,7 +116,7 @@ note("Dependent Variable is the Motor Vehicle Fatality rate of 18-20 year olds a
 
 
 #delimit ;
-graph twoway connected /*betamultiple betad*/ betaig t, msymbol(S + T) ||,
+graph twoway connected /*betamultiple betad*/ betaig t, msymbol(S + T) lcolor(gs2 gs8 gs12) mcolor(gs2 gs8 gs12) ||,
 graphregion(color(white)) xsize(7) 
 legend(label(1 Multiple Dummies On (Adjusted)) label(3 Ignore  Event) 
 label(2 Duplicate Observations) col(1) order(1 2 3))
@@ -126,7 +126,7 @@ yline(0) xline(0) name(ignore, replace) xlabel(-12(3)12)
 
 ;
 
-graph twoway connected betamultiple /*betad betaig*/ t, msymbol(S + T) ||,
+graph twoway connected betamultiple /*betad betaig*/ t, msymbol(S + T) lcolor(gs2 gs8 gs12) mcolor(gs2 gs8 gs12) ||,
 graphregion(color(white)) xsize(7) title(Multiple Dummies On)
 legend(label(1 Multiple Dummies On (Adjusted)) label(3 Ignore Second Event) 
 label(2 Duplicate Observations) col(1) order(1 2 3)) xtitle(Months since event)
@@ -134,7 +134,7 @@ ytitle("Deaths per 100,000 Person-Years") yscale(range(-4 4.5))
 yline(0) xline(0) name(multiple, replace) xlabel(-12(3)12)
 ;
 
-graph combine ignore multiple, xsize(10) title(${eventdesc})
+graph combine ignore multiple, xsize(10) title(${eventdesc}) graphregion(color(white))
 note("Dependent Variable is the Motor Vehicle Fatality rate of 18-20 year olds and the unit of observation is a state-month. An event should be interpreted as a 1 year increase in the state minimum drinking age. Multiple"
 "Dummies coefficients are adjusted so that the coefficient for event time zero equals zero. Regression controls for state and month fixed effects.")
 ;

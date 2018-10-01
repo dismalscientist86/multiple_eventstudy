@@ -18,6 +18,8 @@ forvalues e = 1/$enum{
 	replace event = eventsize`e' if time == event`e'
 }
 
+drop lagdiff1
+
 /*Set the end point dummies to stay on, and count up*/
 sort location time
 
@@ -57,10 +59,22 @@ forvalues y = 1/$ynum{
 
 	/*Store the betas*/
 	global eventmultiple`y' = _b[event]
+	global eventmultiple`y'_reject = (abs(_b[event`i']/_se[event`i'])>=1.96)
 	forvalues i=1/$panelsize{
-		global lag`i'multiple`y' = _b[lagdiff`i']
+		if `i'>1 global lag`i'multiple`y' = _b[lagdiff`i']
 		global lead`i'multiple`y' = _b[leaddiff`i']
+		if `i'>1 global lag`i'multiple`y'_reject = (abs(_b[lagdiff`i']/_se[lagdiff`i'])>=1.96)
+		global lead`i'multiple`y'_reject = (abs(_b[leaddiff`i']/_se[leaddiff`i'])>=1.96)
 	}
+	global lag1multiple`y' = 0
+	global lag1multiple`y'_reject = .
+	if "$inference" != ""{
+		test $lagtestlist
+		global lagtestmultiple = (r(p)<=0.05)
+		test $leadtestlist
+		global leadtestmultiple = (r(p)<=0.05)
+	}
+	
 }
 
 drop event lagdiff* leaddiff*
@@ -76,7 +90,7 @@ forvalues i = 1/$panelsize{
 replace leaddiff$panelsize = eventsize1 if time - event1 > $panelsize & time - event1 !=.
 replace lagdiff$panelsize = eventsize1 if time - event1 < -$panelsize
 
-gen event = (time == event1)
+gen event = (time == event1)*eventsize1
 drop lagdiff1
 
 local conditions
@@ -91,11 +105,20 @@ forvalues y = 1/$ynum{
 	forvalues i=1/$panelsize{
 		if `i' > 1 global lag`i'ignore`y' = _b[lagdiff`i']
 		global lead`i'ignore`y' = _b[leaddiff`i']
+		if `i' >1 global lag`i'ignore`y'_reject = (abs(_b[lagdiff`i']/_se[lagdiff`i'])>=1.96)
+		global lead`i'ignore`y'_reject = (abs(_b[leaddiff`i']/_se[leaddiff`i'])>=1.96)
 	}
 	global eventignore`y' = _b[event]
+	global eventignore`y'_reject = (abs(_b[event`i']/_se[event`i'])>=1.96)
 	global lag1ignore`y' = 0
+	global lag1ignore`y'_reject = .
+	if "$inference" != ""{
+		test $lagtestlist
+		global lagtestignore = (r(p)<=0.05)
+		test $leadtestlist
+		global leadtestignore = (r(p)<=0.05)
+	}
 }
-
 
 /*Store the betas*/
 //global event = _b[event]
@@ -130,7 +153,7 @@ replace leaddiff$panelsize = eventsize1 if time - event1 > $panelsize & time - e
 replace lagdiff$panelsize = eventsize1 if time - event1 < -$panelsize
 
 /*With multiple event dummies turned on, we don't want an omitted category*/
-gen event = (time ==event1)
+gen event = (time ==event1)*eventsize1
 drop lagdiff1
 
 local conditions
@@ -144,9 +167,20 @@ forvalues y = 1/$ynum{
 	forvalues i=1/$panelsize{
 		if `i' > 1 global lag`i'duplicate`y' = _b[lagdiff`i']
 		global lead`i'duplicate`y' = _b[leaddiff`i']
+		if `i' >1 global lag`i'duplicate`y'_reject = (abs(_b[lagdiff`i']/_se[lagdiff`i'])>=1.96)
+		global lead`i'duplicate`y'_reject = (abs(_b[leaddiff`i']/_se[leaddiff`i'])>=1.96)
 	}
 	global eventduplicate`y' = _b[event]
+	global eventduplicate`y'_reject = (abs(_b[event`i']/_se[event`i'])>=1.96)
 	global lag1duplicate`y' = 0
+	global lag1duplicate`y'_reject = .
+	
+	if "$inference" != ""{
+		test $lagtestlist
+		global lagtestduplicate = (r(p)<=0.05)
+		test $leadtestlist
+		global leadtestduplicate = (r(p)<=0.05)
+	}
 }
 
 /*Store the betas*/

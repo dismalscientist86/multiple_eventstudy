@@ -336,7 +336,7 @@ forvalues y = 1/$ynum{
 /*Plot the betas*/
 
 
-local censoring 1
+
 collapse beta*, by(t)
 
 local function1 y = 0 * (x<=0) + $rho*(x>0)
@@ -350,7 +350,7 @@ summ betamultiple`y' if t <0, meanonly
 local offset = r(mean)
 
 #delimit ;
-graph twoway connect beta*`y' t , msymbol(S + T) ||
+graph twoway connect beta*`y' t , msymbol(S + T) lcolor(gs2 gs8 gs12) mcolor(gs2 gs8 gs12) ||
 function `function1', range(-24 24) lpattern(dot) lcolor(gs0)||
 function `function1' + `offset', range(-24 24) lpattern(dot) lcolor(gs0)||,
 graphregion(color(white)) xsize(7) 

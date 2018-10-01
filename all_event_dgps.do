@@ -4,4 +4,5 @@ do event_dgp_comparison
 do y_dgp_comparison
 do censoring
 do duplicate_fail
+do inference
 //do read_minwage

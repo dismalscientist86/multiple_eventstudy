@@ -196,11 +196,11 @@ forvalues i = 1/$panelsize{
 
 #delimit ;
 graph twoway 
-connect y1 eventtime if location ==1 & n == 1, jitter(1) ||
-connect y1 eventtime if location ==1 & n == 2, jitter(1) ||
-connect y1 eventtime if location ==2 & n == 1, jitter(1) ||
-connect y1 eventtime if location ==2 & n == 2, jitter(1) ||
-connect beta eventtime if location == . ||
+connect y1 eventtime if location ==1 & n == 1, jitter(1) lcolor(gs0) mcolor(gs0) msymbol(S) ||
+connect y1 eventtime if location ==1 & n == 2, jitter(1) lcolor(gs0) mcolor(gs0) msymbol(T)  ||
+connect y1 eventtime if location ==2 & n == 1, jitter(1) lcolor(gs4) mcolor(gs4) msymbol(S) ||
+connect y1 eventtime if location ==2 & n == 2, jitter(1) lcolor(gs4) mcolor(gs4) msymbol(T) ||
+connect beta eventtime if location == . , lcolor(gs8) mcolor(gs8) ||
  if abs(eventtime)<=$panelsize,
 legend(label(1 "Location 1, Event 1") label(2 "Location 1, Event 2")
 label(3 "Location 2, Event 1") label(4 "Location 2, Event 2"))
@@ -209,13 +209,13 @@ title(Combined in Event Time)
 ;
 graph export graphs/duplicate_fail_eventtime.eps, replace;
 graph twoway 
-connect y1 time if location == 1, xline(5 7)
+connect y1 time if location == 1, xline(5 7) lcolor(gs0) mcolor(gs0)
 graphregion(color(white)) name(location1, replace)
 title(Location 1)
 ;
 
 graph twoway 
-connect y1 time if location == 2, xline(10 14)
+connect y1 time if location == 2, xline(10 14) lcolor(gs4) mcolor(gs4)
 graphregion(color(white)) name(location2, replace)
 title(Location 2)
 ;

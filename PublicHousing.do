@@ -34,6 +34,7 @@ forvalues i=1/9{
  save Public_Housing.dta, replace
  
  */
+ set matsize 1000
  use Public_Housing, replace
  set more off
  gen y1=total
@@ -83,7 +84,7 @@ gen location = block
 
 *One graph 	
 #delimit ;
-graph twoway connect betamultiple betad  t, msymbol(S  T) mcolor(navy forest_green) ,
+graph twoway connect betamultiple betad  t, msymbol(S  T) mcolor(gs2 gs12) lcolor(gs2 gs12)
 graphregion(color(white)) 
 legend(label(1 Multiple Dummies On (Adjusted))  
 label(2 Duplicate Observations (Adjusted)) col(1) order(1 2))
@@ -99,7 +100,7 @@ note("Dependent Variable is the total crime committed within a 1/4 mile of the d
 graph export graphs/publichousing.eps, replace;
 
 *Three graphs ;
-graph twoway connect betamultiple t, msymbol(S) ,
+graph twoway connect betamultiple t, msymbol(S) mcolor(gs2) lcolor(gs2)
 graphregion(color(white)) 
 title("$eventdesc") xlabel(-$panelsize(12)$panelsize)
 subtitle("Outcome DGP: Empirical")
@@ -110,7 +111,7 @@ yline(0)
 graph save multiple, replace;
 graph export graphs/ph_multiple.eps, replace;
 
-graph twoway connect betad  t, msymbol(T) mcolor(forest_green) lcolor(forest_green) ,
+graph twoway connect betad  t, msymbol(T) mcolor(gs12) lcolor(gs12) 
 graphregion(color(white)) 
 xlabel(-$panelsize(12)$panelsize)
 xline(0, lwidth(medthick)) text(.10 0.25 "Demolition", place(ne) just(left) width(10)) 
@@ -122,7 +123,7 @@ graph export graphs/ph_duplicate.eps, replace;
 
 gen yline=0 ;
 
-graph twoway (connect betaignore  t, msymbol(+) mcolor(maroon) lcolor(maroon)) (line yline t, lcolor(black)) ,
+graph twoway (connect betaignore  t, msymbol(+) mcolor(gs8) lcolor(gs8)) (line yline t, lcolor(black)) ,
 graphregion(color(white)) title("$eventdesc") subtitle("Outcome DGP: Empirical")
 xlabel(-$panelsize(12)$panelsize)
 xline(0, lwidth(medthick)) text(.10 0.25 "Demolition", place(ne) just(left) width(10)) 
